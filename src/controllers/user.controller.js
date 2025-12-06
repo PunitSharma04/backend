@@ -17,8 +17,10 @@ const registerUser = asyncHandler(async (req, res) => {
 
   const { fullname, email, username, password } = req.body;
 
-  console.log("email", email);
-  console.log("password", password);
+  // console.log(req.files)
+
+//   console.log("email", email);
+//   console.log("password", password);
 
   // 1. Check for empty fields
   if (
@@ -60,7 +62,7 @@ const registerUser = asyncHandler(async (req, res) => {
     );
   }
 
-  const existedUser = User.findOne({
+  const existedUser = await User.findOne({
     $or: [{ username }, { email }],
   });
 
@@ -69,7 +71,8 @@ const registerUser = asyncHandler(async (req, res) => {
   }
 
   const avatarLocalPath = req.files?.avatar[0]?.path;
-  const coverImageLocalPath = req.files?.coverImage[0]?.path;
+  const coverImageLocalPath = req.files?.coverimage?.[0]?.path;
+
 
   if (!avatarLocalPath) {
     throw new apiError(400, "Avatar file is required");
@@ -85,7 +88,7 @@ const registerUser = asyncHandler(async (req, res) => {
   const user = await User.create({
     fullname,
     avatar: avatar.url,
-    coverImage: coverImage?.url || "",
+    coverimage: coverImage?.url || "",
     email,
     password,
     username: username.toLowerCase(),
