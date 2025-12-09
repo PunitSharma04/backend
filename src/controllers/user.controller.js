@@ -3,7 +3,8 @@ import { apiError } from "../utils/apiError.js";
 import { User } from "../models/user.model.js";
 import { uploadOnCloudinary } from "../utils/cloudinary.js";
 import { apiResponse } from "../utils/apiResponse.js";
-import { jwt } from "jsonwebtoken";
+import  jwt  from "jsonwebtoken";
+import mongoose from "mongoose";
 
 const generateAccessAndRefereshTokens = async (userId) => {
   try {
@@ -193,8 +194,8 @@ const logoutUser = asyncHandler(async (req, res) => {
   await User.findByIdAndUpdate(
     req.user._id,
     {
-      $set: {
-        refreshtoken: undefined,
+      $unset: {
+        refreshtoken: 1,
       },
     },
     {
@@ -290,7 +291,7 @@ const updateAccountDetails = asyncHandler(async (req, res) => {
     throw new apiError(400, "all fields are required");
   }
 
-  const user = User.findByIdAndUpdate(
+  const user = await User.findByIdAndUpdate(
     req.user?._id,
     {
       $set: {
@@ -325,7 +326,7 @@ const updateUserAvatar = asyncHandler(async (req, res) => {
 
   return res
     .status(200)
-    .json(new apiResponse(200, user, "cover image updated succesfully"));
+    .json(new apiResponse(200, user, "avatar updated succesfully"));
 });
 
 const updateUsercoverImage = asyncHandler(async (req, res) => {
@@ -366,16 +367,16 @@ const getUserProfile = asyncHandler(async (req, res) => {
     {
       $lookup: {
         from: "subscriptions",
-        localField: _id,
-        foreignField: channel,
+        localField: "_id",
+        foreignField: "channel",
         as: "subscribers",
       },
     },
     {
       $lookup: {
         from: "subscriptions",
-        localField: _id,
-        foreignField: subscriber,
+        localField: "_id",
+        foreignField: "subscriber",
         as: "subscribedTo",
       },
     },
