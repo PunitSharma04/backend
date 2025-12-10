@@ -23,6 +23,7 @@ const getChannelStats = asyncHandler(async (req, res) => {
     {
       $match: {
         owner: channelId,
+        ispublished: true,
       },
     },
     {
@@ -34,25 +35,14 @@ const getChannelStats = asyncHandler(async (req, res) => {
       },
     },
   ]);
-
-  const totalVideoLikesAgg = await Video.aggregate([
-    {
-      $match: {
-        owner: channelId,
-      },
-    },
-    {
-      $group: {
-        _id: null,
-        totalLikes: {
-          $sum: "$likes",
-        },
-      },
-    },
-  ]);
-
   const totalVideoViews = totalVideoViewsAgg[0]?.totalViews || 0;
-  const totalVideoLikes = totalVideoLikesAgg[0]?.totalLikes || 0;
+
+  const videoIds = await Video.find({ owner: channelId }).select("_id");
+  const videoIdArray = videoIds.map((v) => v._id);
+
+  const totalVideoLikes = await Like.countDocuments({
+    video: { $in: videoIdArray },
+  });
 
   return res.status(200).json(
     new apiResponse(
