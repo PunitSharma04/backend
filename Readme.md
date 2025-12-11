@@ -1,3 +1,3 @@
-# chai or backend series 
+# backend series 
 
 This is backend course with javascript
