@@ -7,7 +7,7 @@ import { asyncHandler } from "../utils/asyncHandler.js";
 const toggleVideoLike = asyncHandler(async (req, res) => {
   const { videoId } = req.params;
   //TODO: toggle like on video
-  if (!mongoose.isValidObjectId(videoId)) {
+  if (!isValidObjectId(videoId)) {
     throw new apiError(400, "Invalid video ID");
   }
 
@@ -39,7 +39,7 @@ const toggleVideoLike = asyncHandler(async (req, res) => {
 const toggleCommentLike = asyncHandler(async (req, res) => {
   const { commentId } = req.params;
   //TODO: toggle like on comment
-  if (!mongoose.isValidObjectId(commentId)) {
+  if (!isValidObjectId(commentId)) {
     throw new apiError(400, "Invalid comment ID");
   }
   const user = req.user?._id;
@@ -70,7 +70,7 @@ const toggleCommentLike = asyncHandler(async (req, res) => {
 const toggleTweetLike = asyncHandler(async (req, res) => {
   const { tweetId } = req.params;
   //TODO: toggle like on tweet
-  if (!mongoose.isValidObjectId(tweetId)) {
+  if (!isValidObjectId(tweetId)) {
     throw new apiError(400, "Invalid tweet ID");
   }
   const user = req.user?._id;
