@@ -15,7 +15,7 @@ const createPlaylist = asyncHandler(async (req, res) => {
 
   const user = req.user?._id;
 
-  await Playlist.create({
+  const playlist = await Playlist.create({
     name: name,
     description: description,
     owner: user,
@@ -23,7 +23,7 @@ const createPlaylist = asyncHandler(async (req, res) => {
 
   return res
     .status(200)
-    .json(new apiResponse(200, `${name} playlist created successfully`));
+    .json(new apiResponse(200, playlist, "playlist created successfully"));
 });
 
 const getUserPlaylists = asyncHandler(async (req, res) => {
@@ -51,11 +51,9 @@ const getPlaylistById = asyncHandler(async (req, res) => {
   if (!isValidObjectId(playlistId)) {
     throw new apiError(400, "Invalid playlist ID");
   }
-  const user = req.user?._id;
 
   const playlist = await Playlist.findOne({
     _id: playlistId,
-    owner: user,
   }).populate("videos", "thumbnail title views duration");
 
   if (!playlist) {

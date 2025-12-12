@@ -3,6 +3,7 @@ import {
     deleteVideo,
     getAllVideos,
     getVideoById,
+    increaseVideoViews,
     publishAVideo,
     togglePublishStatus,
     updateVideo,
@@ -19,7 +20,7 @@ router
     .post(
         upload.fields([
             {
-                name: "videoFile",
+                name: "videofile",
                 maxCount: 1,
             },
             {
@@ -34,6 +35,7 @@ router
 router
     .route("/:videoId")
     .get(getVideoById)
+    .post(increaseVideoViews)
     .delete(deleteVideo)
     .patch(upload.single("thumbnail"), updateVideo);
 
